@@ -1,15 +1,15 @@
-const app = require('./src/app');
+const app = require("./src/app");
 
 const PORT = process.env.PORT || 3055;
 
 const server = app.listen(PORT, () => {
-    console.log(`WSV eCommerce start with port port ${PORT}`);
-})
+  console.log(`WSV eCommerce start with port port ${PORT}`);
+});
 
-process.on('SIGINT', () => {
-    server.close(() => {
-        console.log(`Exit Server Express`);
-    });
+process.on("SIGINT", () => {
+  server.close(() => {
+    console.log(`Exit Server Express`);
+  });
 
-    // notify.send('ping..')
-})
+  // notify.send('ping..')
+});

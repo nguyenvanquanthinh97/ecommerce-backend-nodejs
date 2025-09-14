@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const app = express();
 
@@ -11,16 +12,17 @@ app.use(helmet());
 app.use(compression());
 
 // init db
+require("./dbs/init.mongodb");
+// const { checkOverloadConnect } = require("./helpers/check.connect");
+// checkOverloadConnect();
 
 // init routes
 app.get("/", (req, res, next) => {
   const strCompress = "hello Factipjs";
-  return res
-    .status(200)
-    .json({
-      message: "Welcome to the API",
-      metadata: strCompress.repeat(100000),
-    });
+  return res.status(200).json({
+    message: "Welcome to the API",
+    metadata: strCompress.repeat(100000),
+  });
 });
 
 // handling error
