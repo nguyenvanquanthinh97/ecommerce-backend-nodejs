@@ -7,6 +7,8 @@ const helmet = require("helmet");
 const compression = require("compression");
 
 // init middlewares
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
 app.use(helmet());
 app.use(compression());
@@ -17,13 +19,7 @@ require("./dbs/init.mongodb");
 // checkOverloadConnect();
 
 // init routes
-app.get("/", (req, res, next) => {
-  const strCompress = "hello Factipjs";
-  return res.status(200).json({
-    message: "Welcome to the API",
-    metadata: strCompress.repeat(100000),
-  });
-});
+app.use("/", require("./routes"));
 
 // handling error
 
