@@ -31,7 +31,7 @@ const keyTokenSchema = new mongoose.Schema(
     }
   },
   {
-    collation: COLLECTION_NAME,
+    collection: COLLECTION_NAME,
     timestamps: true,
   }
 );

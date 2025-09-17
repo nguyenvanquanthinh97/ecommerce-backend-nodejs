@@ -1,5 +1,4 @@
 'use strict'
-
 const ApikeyModel = require("../models/apikey.model")
 
 const findByKey = async (key) => {
