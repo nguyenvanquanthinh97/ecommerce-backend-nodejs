@@ -63,9 +63,14 @@ const findProduct = async ({ product_id, unselect }) => {
     .lean();
 };
 
-const updateProductById = async ({ productId, payload, model, isNew = true }) => {
+const updateProductById = async ({
+  productId,
+  payload,
+  model,
+  isNew = true,
+}) => {
   return await model.findByIdAndUpdate(productId, payload, { new: isNew });
-}
+};
 
 const queryProduct = async ({ query, limit, skip }) => {
   return await ProductSchema.find(query)
@@ -93,6 +98,31 @@ const searchProductByUser = async ({ keySearch }) => {
   return results;
 };
 
+const getProductById = async ({ productId }) => {
+  return await ProductSchema.findById(productId).lean();
+};
+
+const checkProductsByServer = async (products) => {
+  const foundProducts = await Promise.all(
+    products.map(async (product) => {
+      const foundProduct = await ProductSchema.findById(
+        product.productId
+      ).lean();
+      if (!foundProduct) {
+        return undefined
+      }
+
+      return {
+        productId: product.productId,
+        quantity: product.quantity,
+        price: foundProduct.product_price,
+      };
+    })
+  );
+
+  return foundProducts.filter((prod) => prod != undefined);
+};
+
 module.exports = {
   searchProductByUser,
   queryProduct,
@@ -100,5 +130,7 @@ module.exports = {
   unpublishProductByShop,
   findAllProducts,
   findProduct,
-  updateProductById
+  updateProductById,
+  getProductById,
+  checkProductsByServer
 };
