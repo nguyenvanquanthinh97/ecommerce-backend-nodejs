@@ -13,6 +13,13 @@ app.use(morgan("dev"));
 app.use(helmet());
 app.use(compression());
 
+// test pub.sub redis service
+// require("./tests/inventory.test");
+// const productTest = require("./tests/product.test");
+
+// setTimeout(() => {
+//   productTest.purchaseProduct('product:001', 10)
+// }, 2000)
 // init db
 require("./dbs/init.mongodb");
 // const { checkOverloadConnect } = require("./helpers/check.connect");

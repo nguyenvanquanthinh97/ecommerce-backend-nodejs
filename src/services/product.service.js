@@ -15,10 +15,11 @@ const {
   searchProductByUser,
   findAllProducts,
   findProduct,
-  updateProductById
+  updateProductById,
 } = require("../models/repositories/product.repo");
 const { removeUndefinedDeepObject } = require("../utils");
 const { insertInventory } = require("../models/repositories/inventory.repo");
+const NotificationService = require("./notification.service");
 
 // define Factory class to create product
 class ProductFactory {
@@ -59,7 +60,8 @@ class ProductFactory {
   // patch ///
   static async updateProduct({ type, productId, payload }) {
     const productClass = ProductFactory.productRegistry[type];
-    if (!productClass) throw new BadRequestError(`Invalid product type: ${type}`);
+    if (!productClass)
+      throw new BadRequestError(`Invalid product type: ${type}`);
 
     return new productClass(payload).updateProduct(productId);
   }
@@ -91,7 +93,12 @@ class ProductFactory {
       sort,
       page,
       filter,
-      select: ["product_name", "product_price", "product_thumb", "product_shop"],
+      select: [
+        "product_name",
+        "product_price",
+        "product_thumb",
+        "product_shop",
+      ],
     });
   }
 
@@ -135,7 +142,20 @@ class Product {
         productId: newProduct._id,
         shopId: this.product_shop,
         stock: this.product_quantity,
-      })
+      });
+
+      // push noti to system collection
+      NotificationService.pushNotiToSystem({
+        type: "SHOP-001",
+        receivedId: 1, // admin
+        senderId: this.product_shop,
+        options: {
+          productId: newProduct._id,
+          shopId: this.product_shop,
+          product_name: this.product_name,
+          shop_name: this.product_shop,
+        },
+      }).then(console.log).catch(console.error);
     }
     return newProduct;
   }
@@ -145,7 +165,7 @@ class Product {
     return await updateProductById({
       productId,
       payload,
-      model: ProductSchema
+      model: ProductSchema,
     });
   }
 }
@@ -173,7 +193,7 @@ class Clothing extends Product {
       await updateProductById({
         productId,
         payload: objectParams.product_attributes,
-        model: ClothingSchema
+        model: ClothingSchema,
       });
     }
     const updatedProduct = await super.updateProduct(productId, objectParams);
@@ -205,7 +225,7 @@ class Electronics extends Product {
       await updateProductById({
         productId,
         payload: objectParams.product_attributes,
-        model: ElectronicSchema
+        model: ElectronicSchema,
       });
     }
     const updatedProduct = await super.updateProduct(productId, objectParams);
@@ -236,7 +256,7 @@ class Furniture extends Product {
       await updateProductById({
         productId,
         payload: objectParams.product_attributes,
-        model: ElectronicSchema
+        model: ElectronicSchema,
       });
     }
     const updatedProduct = await super.updateProduct(productId, objectParams);
