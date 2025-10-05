@@ -3,7 +3,7 @@
 const { BadRequestError } = require("../core/error.response");
 const { SuccessResponse } = require("../core/success.response");
 
-const { uploadImageFromUrl, uploadImageFromLocal, uploadImageFromLocalToS3 } = require("../services/upload.service");
+const { uploadImageFromUrl, uploadImageFromLocal, uploadImagesFromLocal, uploadImageFromLocalToS3 } = require("../services/upload.service");
 
 class UploadController {
   uploadFile = async (req, res, next) => {
@@ -27,6 +27,21 @@ class UploadController {
       })
     }).send(res)
   }
+
+  uploadFileThumbs = async (req, res, next) => {
+    const files = req.files;
+    if (!files || files.length === 0) {
+      throw new BadRequestError('File not found')
+    }
+
+    new SuccessResponse({
+      message: 'upload successfully',
+      metadata: await uploadImagesFromLocal({
+        files
+      })
+    }).send(res)
+  }
+
 
   uploadImageFromLocalS3 = async (req, res, next) => {
     const { file } = req;
