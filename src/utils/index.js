@@ -40,11 +40,20 @@ const removeUndefinedDeepObject = obj => {
   return final
 }
 
+const replacePlaceholder = (template, params) => {
+  Object.keys(params).forEach(key => {
+    const placeholder = `{{${key}}}` // {{verifykey}}
+    template = template.replace(new RegExp(placeholder, 'g'), params[key])
+  })
+  return template
+}
+
 module.exports = {
   getInfoData,
   getSelectData,
   getUnselectData,
   removeUndefinedShallowObject,
   removeUndefinedDeepObject,
-  convertToObjectIdMongodb
+  convertToObjectIdMongodb,
+  replacePlaceholder
 }

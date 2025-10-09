@@ -10,6 +10,8 @@ router.use(apiKey);
 // check permission
 router.use(permission("0000"));
 
+router.use("/api/v1/email", require("./email"))
+router.use("/api/v1/user", require("./user"))
 router.use("/api/v1/rbac", require("./rbac"));
 router.use("/api/v1/products", require("./product"));
 router.use("/api/v1/profile", require('./profile'))
