@@ -1,8 +1,7 @@
 "use strict";
 
-const Redis = require("ioredis");
 const { reservationInventory } = require("../models/repositories/inventory.repo");
-const redis = new Redis()
+const redis = require('../dbs/init.redis').getRedis()
 
 const acquireLock = async (productId, quantity, cartId) => {
   const key = `lock_v2025_${productId}`;
