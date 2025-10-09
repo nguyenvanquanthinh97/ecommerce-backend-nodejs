@@ -1,15 +1,19 @@
 'use strict'
 
+const logger = require('../loggers/winston.log');
 const {
   StatusCodes,
   ReasonPhrases
 } = require('../utils/httpStatusCode');
 const statusCode = require('../utils/statusCode');
 
+const myLogger = require('../loggers/mylogger.log');
+
 class ErrorResponse extends Error {
   constructor(message, status) {
     super(message);
     this.status = status;
+    this.now = Date.now();
   }
 }
 

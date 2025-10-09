@@ -1,0 +1,2 @@
+2025-10-09 11:04:06.140 AM::info::/api/v1/shop/login::2191b466-0f26-415a-8910-b5ef443d2531::input params::{"name":"Shop TIPS","password":"abc123"}
+2025-10-09 11:04:06.154 AM::error::/api/v1/shop/login::2191b466-0f26-415a-8910-b5ef443d2531::403 - 0ms - Response: {"status":403,"now":1759982646154}::{"message":"Error: Shop not registered"}

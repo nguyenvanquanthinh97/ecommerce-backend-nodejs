@@ -3,6 +3,7 @@
 const AccessService = require("../services/access.service");
 
 const { CREATED, SuccessResponse } = require("../core/success.response");
+const { BadRequestError } = require("../core/error.response");
 
 class AccessController {
   handleRefreshToken = async (req, res, next) => {
@@ -13,6 +14,11 @@ class AccessController {
   }
 
   logout = async (req, res, next) => {
+    const {email} = req.body
+    if (!email) {
+      throw new BadRequestError('email missing')
+    }
+
     return new SuccessResponse({
       message: "Logout OK!",
       metadata: await AccessService.logout({ keyStore: req.keyStore }),

@@ -1,5 +1,5 @@
 require("dotenv").config();
-global.APP_ROOT = __dirname
+global.APP_ROOT = __dirname;
 
 const express = require("express");
 const app = express();
@@ -7,6 +7,8 @@ const app = express();
 const morgan = require("morgan");
 const helmet = require("helmet");
 const compression = require("compression");
+const { v4: uuid } = require("uuid");
+const myLogger = require("./loggers/mylogger.log");
 
 // init middlewares
 app.use(express.json());
@@ -14,6 +16,17 @@ app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
 app.use(helmet());
 app.use(compression());
+
+app.use((req, res, next) => {
+  const requestId = req.headers["x-request-id"];
+  req.requestId = requestId || uuid();
+  myLogger.log("input params", [
+    req.path,
+    { requestId: req.requestId },
+    req.method === "POST" ? req.body : req.query,
+  ]);
+  next();
+});
 
 // test pub.sub redis service
 // require("./tests/inventory.test");
@@ -39,12 +52,21 @@ app.use((req, res, next) => {
 
 app.use((error, req, res, next) => {
   const statusCode = error.status || 500;
-  console.error("Error::", error);
+  const resMessage = `${error.status} - ${
+    Date.now() - error.now
+  }ms - Response: ${JSON.stringify(error)}`;
+  myLogger.error(resMessage, [
+    req.path,
+    { requestId: req.requestId },
+    {
+      message: error.message,
+    },
+  ]);
   return res.status(statusCode).json({
-    status: 'error',
+    status: "error",
     code: statusCode,
-    message: error.message || 'Internal Server Error',
+    message: error.message || "Internal Server Error",
   });
-})
+});
 
 module.exports = app;
