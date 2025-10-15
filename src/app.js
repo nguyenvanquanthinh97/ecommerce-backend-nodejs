@@ -39,6 +39,13 @@ app.use((req, res, next) => {
 require("./dbs/init.mongodb");
 const initRedis = require('./dbs/init.redis')
 initRedis.initRedis()
+
+// init elastic search
+const initES = require('./dbs/init.elasticsearch')
+initES.initES({
+  ELASTICSEARCH_IS_ENABLED: true
+})
+
 // const { checkOverloadConnect } = require("./helpers/check.connect");
 // checkOverloadConnect();
 

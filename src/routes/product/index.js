@@ -6,6 +6,7 @@ const router = express.Router();
 const productController = require('../../controllers/product.controller');
 const { asyncHandler } = require('../../helpers/asyncHandler');
 const { authentication } = require('../../auth/authUtils');
+const { readCache } = require('../../middlewares/cache.middleware');
 
 // PROTECTED ROUTES - SHOP
 router.post('/', authentication, asyncHandler(productController.createProduct));
@@ -19,7 +20,7 @@ router.get('/drafts', authentication, asyncHandler(productController.getAllDraft
 router.get('/publish', authentication, asyncHandler(productController.getAllPublishForShop));
 // public routes
 router.get('/search', asyncHandler(productController.getListSearchProducts));
-router.get('/sku/select_variation', asyncHandler(productController.findOneSku));
+router.get('/sku/select_variation', readCache, asyncHandler(productController.findOneSku));
 router.get('/spu/get_spu_info', asyncHandler(productController.findOneSpu))
 router.get('/:id', asyncHandler(productController.findProduct));
 router.get('/', asyncHandler(productController.findAllProducts))

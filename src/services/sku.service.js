@@ -1,5 +1,7 @@
 'use strict';
 
+const { CACHE_PRODUCT } = require('../configs/constant');
+const { getCache, setCache, setCacheExpiration } = require('../models/repositories/cache.repo');
 const SkuModel = require('../models/sku.model');
 const { randomProductId } = require('../utils');
 
@@ -20,17 +22,44 @@ const newSku = async ({ spu_id, sku_list }) => {
 
 const oneSku = async ({ sku_id, product_id }) => {
   try {
-    // read cache
-    const sku = await SkuModel.findOne({
-      sku_id, product_id
-    })
+    // 1. check params
+    if (sku_id < 0) return null
+    if (product_id < 0) return null
 
-    if (sku) {
-      // TODO: set cache
+    // 2. read cache
+    const skuKeyCache = `${CACHE_PRODUCT.SKU}${sku_id}`
+
+    // 3. read from dbs
+    // if (!skuCache) {
+      // 4. read from dbs
+      const skuCache = await SkuModel.findOne({
+        sku_id, product_id
+      }).lean()
+
+      const valueCache = skuCache ? skuCache : null
+      await setCacheExpiration({
+        key: skuKeyCache,
+        value: JSON.stringify(valueCache),
+        expirationInSeconds: 30
+      }).then()
+    // }
+
+    return {
+      ...skuCache,
+      toLoad: 'dbs' // dbs
     }
-    return sku
+
+    // const sku = await SkuModel.findOne({
+    //   sku_id, product_id
+    // })
+
+    // if (sku) {
+    //   // TODO: set cache
+    // }
+    // return sku
   } catch (error) {
-    return null
+    console.error(error)
+    throw new Error(error.message)
   }
 }
 
