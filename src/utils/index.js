@@ -48,6 +48,10 @@ const replacePlaceholder = (template, params) => {
   return template
 }
 
+const randomProductId  = () => {
+  return Math.floor(Math.random() * 8999999 + 100000)
+}
+
 module.exports = {
   getInfoData,
   getSelectData,
@@ -55,5 +59,6 @@ module.exports = {
   removeUndefinedShallowObject,
   removeUndefinedDeepObject,
   convertToObjectIdMongodb,
-  replacePlaceholder
+  replacePlaceholder,
+  randomProductId
 }

@@ -9,6 +9,7 @@ const { authentication } = require('../../auth/authUtils');
 
 // PROTECTED ROUTES - SHOP
 router.post('/', authentication, asyncHandler(productController.createProduct));
+router.post('/spu/new', authentication, asyncHandler(productController.createSpu));
 router.patch('/:id', authentication, asyncHandler(productController.updateProduct));
 router.post('/publish/:id', authentication, asyncHandler(productController.publishProductByShop));
 router.post('/unpublish/:id', authentication, asyncHandler(productController.unpublishProductByShop));
@@ -18,6 +19,8 @@ router.get('/drafts', authentication, asyncHandler(productController.getAllDraft
 router.get('/publish', authentication, asyncHandler(productController.getAllPublishForShop));
 // public routes
 router.get('/search', asyncHandler(productController.getListSearchProducts));
+router.get('/sku/select_variation', asyncHandler(productController.findOneSku));
+router.get('/spu/get_spu_info', asyncHandler(productController.findOneSpu))
 router.get('/:id', asyncHandler(productController.findProduct));
 router.get('/', asyncHandler(productController.findAllProducts))
 
